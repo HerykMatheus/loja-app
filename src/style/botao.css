@@ -1,0 +1,16 @@
+/* style/botao.css */
+
+.botao-personalizado {
+  background-color: #2563eb; /* azul */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.botao-personalizado:hover {
+  background-color: #1e40af; /* azul mais escuro */
+}
