@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import "../style/formulario.css";
+
 
 function Clientes() {
   const [formData, setFormData] = useState({
@@ -35,30 +35,30 @@ const handleSubmit = async (e) => {
     alert("Cliente cadastrado com sucesso!");
 
     // Limpa os campos do formulário
-    setFormData({
-      tipo: "",
-      cpf_cnpj: "",
-      nome: "",
-      rg_ie: "",
-      orgao_expedidor: "",
-      email: "",
-      cep: "",
-      uf: "",
-      pais: "",
-      municipio: "",
-      logradouro: "",
-      numero: "",
-      complemento: "",
-      bairro: "",
-      telefone: "",
-      situacao: "",
-      fornecedor: false
-    });
+  setFormData({
+  tipo: "Física",
+  cpf_cnpj: "",
+  nome: "",
+  rg_ie: "",
+  orgao_expedidor: "",
+  email: "",
+  cep: "",
+  uf: "",
+  pais: "BRASIL",
+  municipio: "",
+  logradouro: "",
+  numero: "",
+  complemento: "",
+  bairro: "",
+  telefone: "",
+  situacao: "Ativo",
+  fornecedor: false
+});
 
   } catch (error) {
-    console.error("Erro ao cadastrar:", error);
-    alert("Erro ao cadastrar cliente.");
-  }
+  console.error("Erro ao cadastrar:", error);
+  alert("Erro ao cadastrar cliente: " + (error?.toString() || "Erro desconhecido"));
+}
 };
 
   return (

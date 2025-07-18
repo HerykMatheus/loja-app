@@ -1,0 +1,110 @@
+/* Escuro */
+/* Container padrão */
+.cadastro-container,
+.produto-container {
+  padding: 30px;
+  background: #121212;
+  font-family: Arial, sans-serif;
+  color: #f0f0f0;
+}
+
+/* Título principal */
+.cadastro-container h1,
+.produto-container h1 {
+  color: #f60; /* laranja */
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+/* Estilo dos formulários */
+.form-pessoa {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Linhas dos campos */
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Rótulos dos campos */
+.linha label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 180px;
+  color: #ddd;
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #222;
+  color: #eee;
+  flex: 1;
+}
+
+/* Grupo de botões */
+.linha-botoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Botões padrão */
+.btn,
+.btn-confirmar,
+.btn-excluir,
+.btn-limpar {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  color: #f0f0f0;
+}
+
+/* Botão confirmar */
+.btn-confirmar {
+  background-color: #f60;
+  color: white;
+}
+
+/* Botão excluir */
+.btn-excluir {
+  background-color: #f60;
+  color: white;
+}
+
+/* Botão limpar */
+.btn-limpar {
+  background-color: #444;
+  color: #ddd;
+}
+
+/* Checkbox fornecedor */
+.fornecedor-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ddd;
+}
+
+/* Botão tipo card (ex: tamanho, cor) */
+.btn-card {
+  background-color: #333;
+  color: #f60;
+  border: 1px solid #555;
+  padding: 25px;
+  font-size: 18px;
+  width: 250px;
+  height: 100px;
+  text-align: center;
+}

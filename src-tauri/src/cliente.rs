@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
 use rusqlite::{params, Connection, Result};
+use tauri::State;
+use std::sync::Mutex;
+use crate::Db;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Cliente {
@@ -20,51 +23,22 @@ pub struct Cliente {
     pub bairro: String,
     pub telefone: String,
     pub situacao: String,
-    pub fornecedor: bool,
+    pub fornecedor: bool
 }
 
-fn conectar() -> Result<Connection> {
-    let conn = Connection::open("dados.db")?;
-    conn.execute_batch(
-        "
-        CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tipo TEXT,
-            cpf_cnpj TEXT UNIQUE,
-            nome TEXT,
-            rg_ie TEXT,
-            orgao_expedidor TEXT,
-            email TEXT,
-            cep TEXT,
-            uf TEXT,
-            pais TEXT,
-            municipio TEXT,
-            logradouro TEXT,
-            numero TEXT,
-            complemento TEXT,
-            bairro TEXT,
-            telefone TEXT,
-            situacao TEXT,
-            fornecedor INTEGER
-        );
-        ",
-    )?;
-    Ok(conn)
-}
+
+
 
 #[tauri::command]
-pub fn cadastrar_cliente(cliente: Cliente) -> Result<(), String> {
-    let conn = conectar().map_err(|e| e.to_string())?;
+pub async fn cadastrar_cliente(
+    db: State<'_, Mutex<Db>>,
+    cliente: Cliente,
+) -> Result<(), String> {
+    let conn = &db.lock().map_err(|e| e.to_string())?.0;
 
     conn.execute(
-        "
-        INSERT INTO clientes (
-            tipo, cpf_cnpj, nome, rg_ie, orgao_expedidor, email,
-            cep, uf, pais, municipio, logradouro, numero, complemento,
-            bairro, telefone, situacao, fornecedor
-        )
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17)
-        ",
+        "INSERT INTO clientes (tipo, cpf_cnpj, nome, rg_ie, orgao_expedidor, email, cep, uf, pais, municipio, logradouro, numero, complemento, bairro, telefone, situacao, fornecedor)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17)",
         params![
             cliente.tipo,
             cliente.cpf_cnpj,
@@ -82,17 +56,21 @@ pub fn cadastrar_cliente(cliente: Cliente) -> Result<(), String> {
             cliente.bairro,
             cliente.telefone,
             cliente.situacao,
-            cliente.fornecedor as i32
+            cliente.fornecedor
         ],
-    )
-    .map_err(|e| e.to_string())?;
+    ).map_err(|e| {
+        eprintln!("Erro ao cadastrar cliente: {}", e);
+        e.to_string()
+    })?;
 
     Ok(())
 }
 
+
 #[tauri::command]
-pub fn listar_clientes() -> Result<Vec<Cliente>, String> {
-    let conn = conectar().map_err(|e| e.to_string())?;
+pub fn listar_clientes(db: State<Mutex<Db>>) -> Result<Vec<Cliente>, String> {
+    let conn = &db.lock().map_err(|_| "Erro ao acessar o banco".to_string())?.0;
+
     let mut stmt = conn
         .prepare("SELECT * FROM clientes")
         .map_err(|e| e.to_string())?;
@@ -127,9 +105,11 @@ pub fn listar_clientes() -> Result<Vec<Cliente>, String> {
     Ok(clientes)
 }
 
+
+
 #[tauri::command]
-pub fn editar_cliente(cliente: Cliente) -> Result<(), String> {
-    let conn = conectar().map_err(|e| e.to_string())?;
+pub fn editar_cliente(cliente: Cliente, db: State<Mutex<Db>>) -> Result<(), String> {
+    let conn = &db.lock().map_err(|_| "Erro ao acessar o banco".to_string())?.0;
     let id = cliente.id.ok_or("ID não fornecido")?;
 
     conn.execute(
@@ -167,12 +147,16 @@ pub fn editar_cliente(cliente: Cliente) -> Result<(), String> {
     Ok(())
 }
 
+
+
 #[tauri::command]
-pub fn excluir_cliente(id: i32) -> Result<(), String> {
-    let conn = conectar().map_err(|e| e.to_string())?;
+pub fn excluir_cliente(id: i32, db: State<Mutex<Db>>) -> Result<(), String> {
+    let conn = &db.lock().map_err(|_| "Erro ao acessar o banco".to_string())?.0;
 
     conn.execute("DELETE FROM clientes WHERE id = ?", [id])
         .map_err(|e| e.to_string())?;
 
     Ok(())
 }
+
+
